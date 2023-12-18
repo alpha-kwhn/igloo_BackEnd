@@ -1,14 +1,11 @@
 package donggukthon.team10.igloo.service;
 
 import donggukthon.team10.igloo.domain.Igloo;
-import donggukthon.team10.igloo.domain.User;
 import donggukthon.team10.igloo.exception.CustomErrorCode;
 import donggukthon.team10.igloo.exception.IglooException;
 import donggukthon.team10.igloo.repository.IglooRepository;
-import donggukthon.team10.igloo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +20,8 @@ public class IglooService {
     @Transactional
     public void generateIgloo(){
         iglooRepository.save(Igloo.builder()
-                        .owner(userService.getLoginUser())
-                        .code(generateRandomCode())
+                .owner(userService.getLoginUser())
+                .code(generateRandomCode())
                 .build()
         );
     }

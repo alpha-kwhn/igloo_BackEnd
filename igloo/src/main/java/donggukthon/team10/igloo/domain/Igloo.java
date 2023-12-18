@@ -14,7 +14,7 @@ public class Igloo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne
-    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "user_id", nullable = false)
     private User owner;
     private String code;
     @Builder
