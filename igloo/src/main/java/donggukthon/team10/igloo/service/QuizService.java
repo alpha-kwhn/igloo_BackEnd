@@ -4,6 +4,7 @@ import donggukthon.team10.igloo.domain.Igloo;
 import donggukthon.team10.igloo.domain.Quiz;
 import donggukthon.team10.igloo.domain.User;
 import donggukthon.team10.igloo.dto.quiz.request.SaveQuizDTO;
+import donggukthon.team10.igloo.dto.quiz.request.SubmitAnswerDTO;
 import donggukthon.team10.igloo.dto.quiz.request.UpdateQuizDTO;
 import donggukthon.team10.igloo.dto.quiz.response.ShowAllQuizzesDTO;
 import donggukthon.team10.igloo.exception.CustomErrorCode;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,7 +27,8 @@ import java.util.stream.Collectors;
 public class QuizService {
     private final QuizRepository quizRepository;
     private final IglooService iglooService;
-    private final UserRepository userRepository;
+    private final ResultService resultService;
+    private final UserService userService;
     @Transactional
     public void saveQuizzes(Long iglooId, List<SaveQuizDTO> quizzes){
         iglooService.generateIgloo(); //-> 테스트용 코드
@@ -52,7 +55,7 @@ public class QuizService {
                 .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_QUIZ));
     }
     public List<ShowAllQuizzesDTO> showAllQuizzes(Long iglooId){
-        return quizRepository.findAllByIgloo(iglooService.findById(iglooId)).stream()
+        return quizRepository.findAllByIglooOrderById(iglooService.findById(iglooId)).stream()
                 .map(quiz -> {
                     return ShowAllQuizzesDTO.builder()
                             .quizId(quiz.getId())
@@ -66,7 +69,7 @@ public class QuizService {
     @Transactional
     public void updateQuizzes(Long iglooId, List<UpdateQuizDTO> updateQuizDTOs) {
         Igloo findIgloo = iglooService.findById(iglooId);
-        if (!findIgloo.getOwner().equals(getUser()))
+        if (!findIgloo.getOwner().equals(userService.getLoginUser()))
             throw new IglooException(CustomErrorCode.MUST_BE_SAME);
         updateQuizDTOs.stream()
                 .forEach(quiz -> {
@@ -74,8 +77,18 @@ public class QuizService {
                             .updateQuiz(quiz.getQuestion(), quiz.getOptions(), quiz.getCorrectAnswer());
                 });
     }
-    public User getUser(){
-        return userRepository.findById(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()))
-                .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
+    public void gradeAnswerAndSave(Long iglooId, Long userId, List<SubmitAnswerDTO> submitAnswerDTOs){
+        AtomicInteger score = new AtomicInteger();
+        Igloo findIgloo = iglooService.findById(iglooId);
+        quizRepository.findAllByIglooOrderById(findIgloo)
+                .forEach(quiz -> {
+                    submitAnswerDTOs.stream()
+                            .filter(quizDTO -> quizDTO.getQuizId().equals(quiz.getId()))
+                            .findFirst()
+                            .ifPresent(quizDTO -> {
+                                if (quizDTO.getAnswer().equals(quiz.getAnswer())) score.addAndGet(10);
+                            });
+                });
+        resultService.saveResult(findIgloo, userService.findById(userId), score.get());
     }
 }
