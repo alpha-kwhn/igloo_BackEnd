@@ -1,6 +1,7 @@
 package donggukthon.team10.igloo.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,4 +22,14 @@ public class Quiz {
     private String optionSecond;
     private String optionThird;
     private String optionFourth;
+    @Builder
+    public Quiz(Igloo igloo, String question, String answer, String optionFirst, String optionSecond, String optionThird, String optionFourth) {
+        this.igloo = igloo;
+        this.question = question;
+        this.answer = answer;
+        this.optionFirst = optionFirst;
+        this.optionSecond = optionSecond;
+        this.optionThird = optionThird;
+        this.optionFourth = optionFourth;
+    }
 }
