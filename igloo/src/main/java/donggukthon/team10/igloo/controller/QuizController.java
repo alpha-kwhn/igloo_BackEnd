@@ -5,6 +5,7 @@ import donggukthon.team10.igloo.dto.quiz.request.SaveQuizDTO;
 import donggukthon.team10.igloo.dto.quiz.request.SubmitAnswerDTO;
 import donggukthon.team10.igloo.dto.quiz.request.UpdateQuizDTO;
 import donggukthon.team10.igloo.service.QuizService;
+import donggukthon.team10.igloo.service.ResultService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QuizController {
     private final QuizService quizService;
+    private final ResultService resultService;
     @PostMapping("/{iglooId}")
     public ApiResponse saveQuizzes(@PathVariable Long iglooId, @RequestBody List<SaveQuizDTO> quizzes){
         quizService.saveQuizzes(iglooId, quizzes);
@@ -51,6 +53,14 @@ public class QuizController {
         return ApiResponse.nullDataBuilder()
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
+                .build();
+    }
+    @GetMapping("/rank/{iglooId}")
+    public ApiResponse showRanking(@PathVariable Long iglooId){
+        return ApiResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(resultService.showRanking(iglooId))
                 .build();
     }
 }
