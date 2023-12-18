@@ -2,6 +2,7 @@ package donggukthon.team10.igloo.controller;
 
 import donggukthon.team10.igloo.common.ApiResponse;
 import donggukthon.team10.igloo.dto.quiz.request.SaveQuizDTO;
+import donggukthon.team10.igloo.dto.quiz.request.UpdateQuizDTO;
 import donggukthon.team10.igloo.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,14 @@ public class QuizController {
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(quizService.showAllQuizzes(iglooId))
+                .build();
+    }
+    @PatchMapping("/{iglooId}")
+    public ApiResponse editQuizzes(@PathVariable Long iglooId, @RequestBody List<UpdateQuizDTO> updateQuizDTOs){
+        quizService.updateQuizzes(iglooId, updateQuizDTOs);
+        return ApiResponse.nullDataBuilder()
+                .code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
 }
