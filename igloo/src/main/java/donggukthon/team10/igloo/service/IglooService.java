@@ -18,12 +18,12 @@ import java.security.SecureRandom;
 @Service
 @RequiredArgsConstructor
 public class IglooService {
-    private final UserRepository userRepository;
     private final IglooRepository iglooRepository;
+    private final UserService userService;
     @Transactional
     public void generateIgloo(){
         iglooRepository.save(Igloo.builder()
-                        .owner(getMember())
+                        .owner(userService.getLoginUser())
                         .code(generateRandomCode())
                 .build()
         );
@@ -46,9 +46,5 @@ public class IglooService {
         }
 
         return codeBuilder.toString();
-    }
-    public User getMember(){
-        return userRepository.findById(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()))
-                .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
     }
 }

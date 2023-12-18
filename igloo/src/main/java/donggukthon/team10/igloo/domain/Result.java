@@ -1,6 +1,7 @@
 package donggukthon.team10.igloo.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,5 +19,10 @@ public class Result {
     @JoinColumn(name = "user_id")
     private User solver;
     private int score;
-
+    @Builder
+    public Result(Igloo igloo, User solver, int score) {
+        this.igloo = igloo;
+        this.solver = solver;
+        this.score = score;
+    }
 }

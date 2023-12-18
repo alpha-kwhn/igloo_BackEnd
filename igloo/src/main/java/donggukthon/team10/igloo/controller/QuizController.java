@@ -2,6 +2,7 @@ package donggukthon.team10.igloo.controller;
 
 import donggukthon.team10.igloo.common.ApiResponse;
 import donggukthon.team10.igloo.dto.quiz.request.SaveQuizDTO;
+import donggukthon.team10.igloo.dto.quiz.request.SubmitAnswerDTO;
 import donggukthon.team10.igloo.dto.quiz.request.UpdateQuizDTO;
 import donggukthon.team10.igloo.service.QuizService;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,17 @@ public class QuizController {
     @PatchMapping("/{iglooId}")
     public ApiResponse editQuizzes(@PathVariable Long iglooId, @RequestBody List<UpdateQuizDTO> updateQuizDTOs){
         quizService.updateQuizzes(iglooId, updateQuizDTOs);
+        return ApiResponse.nullDataBuilder()
+                .code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .build();
+    }
+    @PostMapping("/{iglooId}/")
+    public ApiResponse submitAnswer(
+            @PathVariable Long iglooId,
+            @RequestParam Long userId,
+            @RequestBody List<SubmitAnswerDTO> submitAnswerDTOs){
+        quizService.gradeAnswerAndSave(iglooId, userId, submitAnswerDTOs);
         return ApiResponse.nullDataBuilder()
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
