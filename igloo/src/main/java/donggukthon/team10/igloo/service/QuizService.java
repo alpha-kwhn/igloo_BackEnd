@@ -2,11 +2,17 @@ package donggukthon.team10.igloo.service;
 
 import donggukthon.team10.igloo.domain.Igloo;
 import donggukthon.team10.igloo.domain.Quiz;
+import donggukthon.team10.igloo.domain.User;
 import donggukthon.team10.igloo.dto.quiz.request.SaveQuizDTO;
+import donggukthon.team10.igloo.dto.quiz.request.UpdateQuizDTO;
 import donggukthon.team10.igloo.dto.quiz.response.ShowAllQuizzesDTO;
+import donggukthon.team10.igloo.exception.CustomErrorCode;
+import donggukthon.team10.igloo.exception.IglooException;
 import donggukthon.team10.igloo.repository.QuizRepository;
+import donggukthon.team10.igloo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +25,7 @@ import java.util.stream.Collectors;
 public class QuizService {
     private final QuizRepository quizRepository;
     private final IglooService iglooService;
+    private final UserRepository userRepository;
     @Transactional
     public void saveQuizzes(Long iglooId, List<SaveQuizDTO> quizzes){
         iglooService.generateIgloo(); //-> 테스트용 코드
@@ -40,6 +47,10 @@ public class QuizService {
                 }
                 );
     }
+    public Quiz findById(Long quizId){
+        return quizRepository.findById(quizId)
+                .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_QUIZ));
+    }
     public List<ShowAllQuizzesDTO> showAllQuizzes(Long iglooId){
         return quizRepository.findAllByIgloo(iglooService.findById(iglooId)).stream()
                 .map(quiz -> {
@@ -51,5 +62,20 @@ public class QuizService {
                             .build();
                 })
                 .collect(Collectors.toList());
+    }
+    @Transactional
+    public void updateQuizzes(Long iglooId, List<UpdateQuizDTO> updateQuizDTOs) {
+        Igloo findIgloo = iglooService.findById(iglooId);
+        if (!findIgloo.getOwner().equals(getUser()))
+            throw new IglooException(CustomErrorCode.MUST_BE_SAME);
+        updateQuizDTOs.stream()
+                .forEach(quiz -> {
+                    findById(quiz.getQuizId())
+                            .updateQuiz(quiz.getQuestion(), quiz.getOptions(), quiz.getCorrectAnswer());
+                });
+    }
+    public User getUser(){
+        return userRepository.findById(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()))
+                .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
     }
 }
