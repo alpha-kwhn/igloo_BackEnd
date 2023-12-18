@@ -3,6 +3,7 @@ package donggukthon.team10.igloo.service;
 import donggukthon.team10.igloo.domain.Igloo;
 import donggukthon.team10.igloo.domain.Quiz;
 import donggukthon.team10.igloo.dto.quiz.request.SaveQuizDTO;
+import donggukthon.team10.igloo.dto.quiz.response.ShowAllQuizzesDTO;
 import donggukthon.team10.igloo.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -19,7 +21,7 @@ public class QuizService {
     private final IglooService iglooService;
     @Transactional
     public void saveQuizzes(Long iglooId, List<SaveQuizDTO> quizzes){
-        //iglooService.generateIgloo(); //-> 테스트용 코드
+        iglooService.generateIgloo(); //-> 테스트용 코드
         //TODO: 이글루 생성 코드도 완성하고 확인 다시 필요
 
         Igloo findIgloo = iglooService.findById(iglooId);
@@ -37,5 +39,17 @@ public class QuizService {
                             .build());
                 }
                 );
+    }
+    public List<ShowAllQuizzesDTO> showAllQuizzes(Long iglooId){
+        return quizRepository.findAllByIgloo(iglooService.findById(iglooId)).stream()
+                .map(quiz -> {
+                    return ShowAllQuizzesDTO.builder()
+                            .quizId(quiz.getId())
+                            .question(quiz.getQuestion())
+                            .options(List.of(quiz.getOptionFirst(), quiz.getOptionSecond(), quiz.getOptionThird(), quiz.getOptionFourth()))
+                            .correctAnswer(quiz.getAnswer())
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 }

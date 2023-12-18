@@ -24,4 +24,12 @@ public class QuizController {
                 .message(HttpStatus.CREATED.getReasonPhrase())
                 .build();
     }
+    @GetMapping("/{iglooId}")
+    public ApiResponse showQuizzes(@PathVariable Long iglooId){
+        return ApiResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(quizService.showAllQuizzes(iglooId))
+                .build();
+    }
 }
