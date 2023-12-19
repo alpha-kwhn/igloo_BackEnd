@@ -1,6 +1,6 @@
 package donggukthon.team10.igloo.dto.paper.request;
 
-에import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 
 @Builder
