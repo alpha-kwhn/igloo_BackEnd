@@ -3,6 +3,7 @@ package donggukthon.team10.igloo.repository;
 import donggukthon.team10.igloo.domain.Igloo;
 import donggukthon.team10.igloo.domain.RollingPaper;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -18,4 +19,7 @@ public interface PaperRepository extends JpaRepository<RollingPaper, Long> {
     @Query("SELECT rp FROM RollingPaper rp WHERE rp.igloo.id = :iglooId AND rp.id = :paperId")
     Optional<RollingPaper> findRollingPaperByIglooIdAndPaperId(@Param("iglooId") Long iglooId, @Param("paperId") Long paperId);
 
+    @Modifying
+    @Query("UPDATE RollingPaper p SET p.content = :content, p.design = :design WHERE p.igloo.id = :iglooId AND p.id = :paperId")
+    int updatePaper(@Param("iglooId") Long iglooId, @Param("paperId") Long paperId, @Param("content") String content, @Param("design") int design);
 }

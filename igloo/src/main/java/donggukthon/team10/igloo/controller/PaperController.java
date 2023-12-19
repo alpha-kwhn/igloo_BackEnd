@@ -2,6 +2,7 @@ package donggukthon.team10.igloo.controller;
 
 import donggukthon.team10.igloo.common.ApiResponse;
 import donggukthon.team10.igloo.dto.paper.request.OpenDateDTO;
+import donggukthon.team10.igloo.dto.paper.request.PaperChangeDTO;
 import donggukthon.team10.igloo.dto.paper.request.WritePaperDTO;
 import donggukthon.team10.igloo.dto.paper.response.CreatedRollingPaperDTO;
 import donggukthon.team10.igloo.dto.paper.response.DeleteResultDTO;
@@ -46,5 +47,13 @@ public class PaperController {
     public ApiResponse<DeleteResultDTO> deletePaper(@PathVariable("iglooId") Long iglooId,
                                                     @RequestParam(name = "paperId") Long paperId) {
         return paperService.deletePaper(iglooId, paperId);
+    }
+
+    @PatchMapping("/{iglooId}/")
+    public ApiResponse<?> updatePaper(@PathVariable("iglooId") Long iglooId,
+                                                   @RequestParam(name = "paperId") Long paperId,
+                                                   @RequestBody PaperChangeDTO changDTO) {
+
+        return paperService.updatePaper(iglooId, paperId, changDTO);
     }
 }
