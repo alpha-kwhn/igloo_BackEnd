@@ -30,7 +30,7 @@ public class UserService {
      * 진행하실 때 변경 반드시 해야합니다!
      */
     @Transactional
-    public void saveUser(Long userId){
+    public void saveUser(String userId){
         userRepository.save(User.builder()
                 .id(userId)
                 .password(passwordEncoder.encode("dlawjddn0105@gmail.com"))
@@ -44,10 +44,10 @@ public class UserService {
         return jwtProvider.generateToken(authenticate);
     }
     public User getLoginUser(){
-        return userRepository.findById(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()))
+        return userRepository.findById(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
     }
-    public User findById(Long userId){
+    public User findById(String userId){
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
     }

@@ -37,22 +37,21 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/goo")
-    public ApiResponse<LoginResponse> getCallback(@RequestParam(name = "code") String code) {
-        String accessToken = googleService.getAccessCode(code);
-        OauthInfoResponse oauthInfoResponse = googleService.requestUserInfo(accessToken);
+//    @GetMapping("/goo")
+//    public ApiResponse<LoginResponse> getCallback(@RequestParam(name = "code") String code) {
+//        String accessToken = googleService.getAccessCode(code);
+//        OauthInfoResponse oauthInfoResponse = googleService.requestUserInfo(accessToken);
 
-        User user = userService.findUser(oauthInfoResponse);
-
-        if (user == null) {
-            user = userService.saveUser(oauthInfoResponse);
-            iglooService.generateIgloo(user);
-        }
-        return userService.login(user);
+//
+//        if (user == null) {
+//            user = userService.saveUser(oauthInfoResponse);
+//            iglooService.generateIgloo(user);
+//        }
+//        return userService.login(user);
     }
 
-    @PostMapping("/logout")
-    public ApiResponse<?> logout() {
-        return userService.logout();
-    }
-}
+//    @PostMapping("/logout")
+//    public ApiResponse<?> logout() {
+//        return userService.logout();
+//    }
+//}
