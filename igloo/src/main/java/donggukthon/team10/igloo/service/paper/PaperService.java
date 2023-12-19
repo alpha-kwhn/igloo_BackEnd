@@ -2,6 +2,7 @@ package donggukthon.team10.igloo.service.paper;
 
 import donggukthon.team10.igloo.common.ApiResponse;
 import donggukthon.team10.igloo.domain.RollingPaper;
+import donggukthon.team10.igloo.dto.paper.request.PaperChangeDTO;
 import donggukthon.team10.igloo.dto.paper.request.WritePaperDTO;
 import donggukthon.team10.igloo.dto.paper.response.*;
 import donggukthon.team10.igloo.exception.CustomErrorCode;
@@ -136,5 +137,32 @@ public class PaperService {
                             .build())
                     .build();
         }
+    }
+
+    @Transactional
+    public ApiResponse<?> updatePaper(Long iglooId, Long paperId, PaperChangeDTO change) {
+        RollingPaper rollingPaper = paperRepository.findRollingPaperByIglooIdAndPaperId(iglooId, paperId)
+                .orElse(null);
+
+        if (rollingPaper != null) {
+            if (paperRepository.updatePaper(iglooId, paperId, change.content(), change.design()) > 0) {
+                return ApiResponse.<PaperChangeDTO>builder()
+                        .code(HttpStatus.NO_CONTENT.value())
+                        .message("Update Success")
+                        .data(PaperChangeDTO.builder()
+                                .design(change.design())
+                                .content(change.content())
+                                .build())
+                        .build();
+            } else {
+                throw new PaperException(CustomErrorCode.PAPER_UPDATE_ERROR);
+            }
+        } else {
+            return ApiResponse.nullDataBuilder()
+                    .code(HttpStatus.NOT_FOUND.value())
+                    .message(HttpStatus.NOT_FOUND.getReasonPhrase())
+                    .build();
+        }
+
     }
 }
