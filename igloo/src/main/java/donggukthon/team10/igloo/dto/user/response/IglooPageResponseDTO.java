@@ -10,4 +10,5 @@ public class IglooPageResponseDTO {
     private String code;
     private String info;
     private boolean owner;
+    private Long id;
 }
