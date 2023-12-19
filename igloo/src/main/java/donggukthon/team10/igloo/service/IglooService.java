@@ -46,7 +46,8 @@ public class IglooService {
         User owner = findIgloo.getOwner();
         User loginUser = userService.getLoginUser();
         Igloo loginIgloo = findMyIgloo(loginUser);
-        visitService.saveRecord(loginIgloo, findIgloo);
+        if (!owner.equals(loginUser))
+            visitService.saveRecord(loginIgloo, findIgloo);
 
         return IglooPageResponseDTO.builder()
                 .nickname(owner.getNickname())
