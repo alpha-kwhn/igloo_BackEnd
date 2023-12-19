@@ -3,6 +3,7 @@ package donggukthon.team10.igloo.controller;
 import donggukthon.team10.igloo.common.ApiResponse;
 import donggukthon.team10.igloo.domain.User;
 import donggukthon.team10.igloo.dto.auth.request.LoginDTO;
+import donggukthon.team10.igloo.dto.auth.response.LoginResponseDTO;
 import donggukthon.team10.igloo.dto.user.request.SaveUserDTO;
 import donggukthon.team10.igloo.service.IglooService;
 import donggukthon.team10.igloo.service.UserService;
@@ -43,10 +44,12 @@ public class AuthController {
     }
     @PostMapping("/login")
     public ApiResponse login(@RequestBody LoginDTO loginDTO, HttpServletResponse response){
-        response.setHeader("Authorization", BEARER_PREFIX + loginService.login(loginDTO.getId(), loginDTO.getPassword()));
-        return ApiResponse.nullDataBuilder()
+        LoginResponseDTO loginResponseDTO = loginService.login(loginDTO.getId(), loginDTO.getPassword());
+        response.setHeader("Authorization", BEARER_PREFIX + loginResponseDTO.getToken());
+        return ApiResponse.builder()
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
+                .data(loginResponseDTO.getCode())
                 .build();
     }
     @GetMapping("/logout")
