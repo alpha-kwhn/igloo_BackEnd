@@ -2,6 +2,7 @@ package donggukthon.team10.igloo.service;
 
 import donggukthon.team10.igloo.domain.User;
 import donggukthon.team10.igloo.dto.TestLoginDTO;
+import donggukthon.team10.igloo.dto.user.request.SaveUserDTO;
 import donggukthon.team10.igloo.exception.CustomErrorCode;
 import donggukthon.team10.igloo.exception.IglooException;
 import donggukthon.team10.igloo.repository.UserRepository;
@@ -30,12 +31,16 @@ public class UserService {
      * 진행하실 때 변경 반드시 해야합니다!
      */
     @Transactional
-    public void saveUser(Long userId){
+    public void saveUser(SaveUserDTO saveUserDTO){
         userRepository.save(User.builder()
-                .id(userId)
-                .password(passwordEncoder.encode("dlawjddn0105@gmail.com"))
-                .nickname(generateNickname())
+                .username(saveUserDTO.getId())
+                .password(passwordEncoder.encode(saveUserDTO.getPassword()))
+                .korName(saveUserDTO.getKorName())
+                .nickname(saveUserDTO.getNickname())
                 .build());
+    }
+    public boolean isAvailableId(String username){
+        return !userRepository.existsByUsername(username);
     }
     public String login(TestLoginDTO testLoginDTO){
         UsernamePasswordAuthenticationToken authenticationToken
