@@ -29,7 +29,12 @@ public class User {
         this.info = nickname + "의 이글루에 오신 걸 환영합니다~!";
         this.role = "USER";
     }
-    public void updateNickname(String nickname){
+    public String updateNickname(String nickname){
         this.nickname = nickname;
+        return this.nickname;
+    }
+    public String updateInfo(String info){
+        this.info = info;
+        return this.info;
     }
 }
