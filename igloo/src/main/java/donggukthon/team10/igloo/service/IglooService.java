@@ -19,6 +19,7 @@ import java.security.SecureRandom;
 public class IglooService {
     private final IglooRepository iglooRepository;
     private final UserService userService;
+    private final VisitService visitService;
     @Transactional
     public void generateIgloo(User savedUser){
         iglooRepository.save(Igloo.builder()
@@ -44,15 +45,14 @@ public class IglooService {
         Igloo findIgloo = findByCode(code);
         User owner = findIgloo.getOwner();
         User loginUser = userService.getLoginUser();
-        Igloo myIgloo = findMyIgloo(loginUser);
-        // 내가 내 이글루를 방문하는게 아니라면 visit 저장해야함
-
+        Igloo loginIgloo = findMyIgloo(loginUser);
+        visitService.saveRecord(loginIgloo, findIgloo);
 
         return IglooPageResponseDTO.builder()
                 .nickname(owner.getNickname())
                 .code(findIgloo.getCode())
                 .info(owner.getInfo())
-                .owner(owner.equals(userService.getLoginUser()))
+                .owner(owner.equals(loginUser))
                 .build();
     }
     public String generateRandomCode() {
