@@ -44,7 +44,7 @@ public class UserService {
         return jwtProvider.generateToken(authenticate);
     }
     public User getLoginUser(){
-        return userRepository.findById(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()))
+        return userRepository.findUserByNickname(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
     }
     public User findById(Long userId){

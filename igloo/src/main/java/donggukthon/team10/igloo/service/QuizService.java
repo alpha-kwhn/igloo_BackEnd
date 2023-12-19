@@ -37,8 +37,8 @@ public class QuizService {
         Igloo findIgloo = iglooService.findById(iglooId);
         quizzes.stream()
                 .forEach(quiz -> {
-                    log.info(quiz.getCorrectAnswer());
-                    quizRepository.save(Quiz.builder()
+                            log.info(quiz.getCorrectAnswer());
+                            quizRepository.save(Quiz.builder()
                                     .igloo(findIgloo)
                                     .question(quiz.getQuestion())
                                     .answer(quiz.getCorrectAnswer())
@@ -46,8 +46,8 @@ public class QuizService {
                                     .optionSecond(quiz.getOptions().get(1))
                                     .optionThird(quiz.getOptions().get(2))
                                     .optionFourth(quiz.getOptions().get(3))
-                            .build());
-                }
+                                    .build());
+                        }
                 );
     }
     public Quiz findById(Long quizId){

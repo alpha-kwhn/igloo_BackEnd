@@ -22,7 +22,7 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info(username);
-        User user = userRepository.findById(Long.parseLong(username))
+        User user = userRepository.findUserByNickname(username)
                 .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole()));
