@@ -16,9 +16,11 @@ public class RollingPaper {
     @ManyToOne
     @JoinColumn(name = "igloo_id")
     private Igloo igloo;
+
     @OneToOne
-    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "user_id")
     private User writer;
+
     private String content;
     private int design;
 
