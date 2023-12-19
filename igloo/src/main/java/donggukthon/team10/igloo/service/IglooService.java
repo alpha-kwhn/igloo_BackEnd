@@ -1,6 +1,7 @@
 package donggukthon.team10.igloo.service;
 
 import donggukthon.team10.igloo.domain.Igloo;
+import donggukthon.team10.igloo.domain.User;
 import donggukthon.team10.igloo.exception.CustomErrorCode;
 import donggukthon.team10.igloo.exception.IglooException;
 import donggukthon.team10.igloo.repository.IglooRepository;
@@ -18,9 +19,9 @@ public class IglooService {
     private final IglooRepository iglooRepository;
     private final UserService userService;
     @Transactional
-    public void generateIgloo(){
+    public void generateIgloo(User savedUser){
         iglooRepository.save(Igloo.builder()
-                .owner(userService.getLoginUser())
+                .owner(savedUser)
                 .code(generateRandomCode())
                 .build()
         );
