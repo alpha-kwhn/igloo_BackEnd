@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record WritePaperDTO(
-        String id,
+        Long id,
         String contents,
         int design
 ) {}
