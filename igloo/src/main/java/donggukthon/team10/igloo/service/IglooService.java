@@ -50,6 +50,7 @@ public class IglooService {
             visitService.saveRecord(loginIgloo, findIgloo);
 
         return IglooPageResponseDTO.builder()
+                .id(findIgloo.getId())
                 .nickname(owner.getNickname())
                 .code(findIgloo.getCode())
                 .info(owner.getInfo())
