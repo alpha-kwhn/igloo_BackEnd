@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum CustomErrorCode {
+    //400
+    EXISTED_USERNAME(HttpStatus.BAD_REQUEST, "THIS ID IS ALREADY EXISTED"),
 
     //401
     NOT_LOGIN_USER(HttpStatus.UNAUTHORIZED, "NOT LOGIN USER"),
