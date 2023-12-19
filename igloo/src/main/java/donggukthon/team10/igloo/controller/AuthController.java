@@ -5,6 +5,7 @@ import donggukthon.team10.igloo.dto.auth.request.LoginDTO;
 import donggukthon.team10.igloo.dto.user.request.SaveUserDTO;
 import donggukthon.team10.igloo.service.UserService;
 import donggukthon.team10.igloo.service.auth.LoginService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,14 @@ public class AuthController {
     @PostMapping("/login")
     public ApiResponse login(@RequestBody LoginDTO loginDTO, HttpServletResponse response){
         response.setHeader("Authorization", BEARER_PREFIX + loginService.login(loginDTO.getId(), loginDTO.getPassword()));
+        return ApiResponse.nullDataBuilder()
+                .code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .build();
+    }
+    @GetMapping("/logout")
+    public ApiResponse logout(HttpServletRequest request, HttpServletResponse response){
+        loginService.logout(request, response);
         return ApiResponse.nullDataBuilder()
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
