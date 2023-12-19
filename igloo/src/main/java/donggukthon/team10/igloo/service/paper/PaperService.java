@@ -1,7 +1,6 @@
 package donggukthon.team10.igloo.service.paper;
 
 import donggukthon.team10.igloo.common.ApiResponse;
-import donggukthon.team10.igloo.domain.Igloo;
 import donggukthon.team10.igloo.domain.RollingPaper;
 import donggukthon.team10.igloo.domain.User;
 import donggukthon.team10.igloo.dto.paper.request.WritePaperDTO;
