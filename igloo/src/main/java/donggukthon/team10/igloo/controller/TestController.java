@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class TestController {
     private final UserService userService;
     @PostMapping("/api/auth/save")
-    public String testSave(@RequestParam Long userId){
+    public String testSave(@RequestParam String userId){
         userService.saveUser(userId);
         return "ok";
     }

@@ -37,8 +37,8 @@ public class QuizService {
         Igloo findIgloo = iglooService.findById(iglooId);
         quizzes.stream()
                 .forEach(quiz -> {
-                    log.info(quiz.getCorrectAnswer());
-                    quizRepository.save(Quiz.builder()
+                            log.info(quiz.getCorrectAnswer());
+                            quizRepository.save(Quiz.builder()
                                     .igloo(findIgloo)
                                     .question(quiz.getQuestion())
                                     .answer(quiz.getCorrectAnswer())
@@ -46,8 +46,8 @@ public class QuizService {
                                     .optionSecond(quiz.getOptions().get(1))
                                     .optionThird(quiz.getOptions().get(2))
                                     .optionFourth(quiz.getOptions().get(3))
-                            .build());
-                }
+                                    .build());
+                        }
                 );
     }
     public Quiz findById(Long quizId){
@@ -77,7 +77,7 @@ public class QuizService {
                             .updateQuiz(quiz.getQuestion(), quiz.getOptions(), quiz.getCorrectAnswer());
                 });
     }
-    public void gradeAnswerAndSave(Long iglooId, Long userId, List<SubmitAnswerDTO> submitAnswerDTOs){
+    public void gradeAnswerAndSave(Long iglooId, String userId, List<SubmitAnswerDTO> submitAnswerDTOs){
         AtomicInteger score = new AtomicInteger();
         Igloo findIgloo = iglooService.findById(iglooId);
         quizRepository.findAllByIglooOrderById(findIgloo)
