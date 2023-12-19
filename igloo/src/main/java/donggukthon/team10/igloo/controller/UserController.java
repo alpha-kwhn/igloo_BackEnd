@@ -6,6 +6,7 @@ import donggukthon.team10.igloo.dto.user.request.UpdateInfoDTO;
 import donggukthon.team10.igloo.dto.user.request.UpdateNicknameDTO;
 import donggukthon.team10.igloo.service.IglooService;
 import donggukthon.team10.igloo.service.UserService;
+import donggukthon.team10.igloo.service.VisitService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
     private final IglooService iglooService;
+    private final VisitService visitService;
     @PatchMapping("/nickname")
     public ApiResponse updateNickname(@RequestBody UpdateNicknameDTO updateNicknameDTO){
         return ApiResponse.builder()
@@ -38,6 +40,14 @@ public class UserController {
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(iglooService.showIglooInfo(iglooPageDTO.getCode()))
+                .build();
+    }
+    @GetMapping("/visit")
+    public ApiResponse showVisits(){
+        return ApiResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(visitService.showVisits(iglooService.findMyIgloo(userService.getLoginUser())))
                 .build();
     }
 }
