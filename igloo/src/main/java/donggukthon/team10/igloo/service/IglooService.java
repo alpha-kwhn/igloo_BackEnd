@@ -2,6 +2,7 @@ package donggukthon.team10.igloo.service;
 
 import donggukthon.team10.igloo.domain.Igloo;
 import donggukthon.team10.igloo.domain.User;
+import donggukthon.team10.igloo.dto.user.response.IglooPageResponseDTO;
 import donggukthon.team10.igloo.exception.CustomErrorCode;
 import donggukthon.team10.igloo.exception.IglooException;
 import donggukthon.team10.igloo.repository.IglooRepository;
@@ -17,6 +18,7 @@ import java.security.SecureRandom;
 @RequiredArgsConstructor
 public class IglooService {
     private final IglooRepository iglooRepository;
+    private final UserService userService;
     @Transactional
     public void generateIgloo(User savedUser){
         iglooRepository.save(Igloo.builder()
@@ -29,9 +31,29 @@ public class IglooService {
         return iglooRepository.findById(iglooId)
                 .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_IGLOO));
     }
+    public Igloo findByCode(String code){
+        return iglooRepository.findByCode(code)
+                .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_IGLOO));
+    }
     public Igloo findMyIgloo(User user){
         return iglooRepository.findByOwner(user)
                 .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_IGLOO));
+    }
+    public IglooPageResponseDTO showIglooInfo(String code){
+        System.out.println("result: " + iglooRepository.existsByCode(code));
+        Igloo findIgloo = findByCode(code);
+        User owner = findIgloo.getOwner();
+        User loginUser = userService.getLoginUser();
+        Igloo myIgloo = findMyIgloo(loginUser);
+        // 내가 내 이글루를 방문하는게 아니라면 visit 저장해야함
+
+
+        return IglooPageResponseDTO.builder()
+                .nickname(owner.getNickname())
+                .code(findIgloo.getCode())
+                .info(owner.getInfo())
+                .owner(owner.equals(userService.getLoginUser()))
+                .build();
     }
     public String generateRandomCode() {
         final String CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";

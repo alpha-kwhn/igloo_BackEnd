@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface IglooRepository extends JpaRepository<Igloo, Long> {
     Optional<Igloo> findByOwner(User user);
+    Optional<Igloo> findByCode(String code);
     boolean existsByCode(String code);
 }
