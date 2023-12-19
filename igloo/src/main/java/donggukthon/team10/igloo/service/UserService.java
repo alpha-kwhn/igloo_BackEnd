@@ -47,6 +47,10 @@ public class UserService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
     }
+    public User findByUsername(String username){
+        return userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
+    }
     @Transactional
     public String updateNickname(String newNickname){
         return getLoginUser().updateNickname(newNickname);

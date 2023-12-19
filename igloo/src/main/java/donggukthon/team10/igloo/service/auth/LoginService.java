@@ -1,5 +1,9 @@
 package donggukthon.team10.igloo.service.auth;
 
+import donggukthon.team10.igloo.domain.User;
+import donggukthon.team10.igloo.dto.auth.response.LoginResponseDTO;
+import donggukthon.team10.igloo.service.IglooService;
+import donggukthon.team10.igloo.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +20,19 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LoginService {
     private final JwtProvider jwtProvider;
+    private final UserService userService;
+    private final IglooService iglooService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    public String login(String username, String password){
+    public LoginResponseDTO login(String username, String password){
         UsernamePasswordAuthenticationToken authenticationToken
                 = new UsernamePasswordAuthenticationToken(username, password);
         Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        return jwtProvider.generateToken(authenticate);
+        User findUser = userService.findByUsername(username);
+        return LoginResponseDTO.builder()
+                .user(findUser)
+                .token(jwtProvider.generateToken(authenticate))
+                .code(iglooService.findMyIgloo(findUser).getCode())
+                .build();
     }
     public void logout(HttpServletRequest request, HttpServletResponse response){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

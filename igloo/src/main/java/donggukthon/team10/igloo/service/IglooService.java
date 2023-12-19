@@ -17,7 +17,6 @@ import java.security.SecureRandom;
 @RequiredArgsConstructor
 public class IglooService {
     private final IglooRepository iglooRepository;
-    private final UserService userService;
     @Transactional
     public void generateIgloo(User savedUser){
         iglooRepository.save(Igloo.builder()
@@ -30,6 +29,10 @@ public class IglooService {
         return iglooRepository.findById(iglooId)
                 .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_IGLOO));
     }
+    public Igloo findMyIgloo(User user){
+        return iglooRepository.findByOwner(user)
+                .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_IGLOO));
+    }
     public String generateRandomCode() {
         final String CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         final int CODE_LENGTH = 6;
@@ -37,12 +40,15 @@ public class IglooService {
         SecureRandom random = new SecureRandom();
         StringBuilder codeBuilder = new StringBuilder();
 
-        for (int i = 0; i < CODE_LENGTH; i++) {
-            int randomIndex = random.nextInt(CHARACTERS.length());
-            char randomChar = CHARACTERS.charAt(randomIndex);
-            codeBuilder.append(randomChar);
+        while(true){
+            for (int i = 0; i < CODE_LENGTH; i++) {
+                int randomIndex = random.nextInt(CHARACTERS.length());
+                char randomChar = CHARACTERS.charAt(randomIndex);
+                codeBuilder.append(randomChar);
+            }
+            if (!iglooRepository.existsByCode(codeBuilder.toString()))
+                break;
         }
-
         return codeBuilder.toString();
     }
 }
