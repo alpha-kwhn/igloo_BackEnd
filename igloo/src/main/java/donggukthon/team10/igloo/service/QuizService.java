@@ -77,7 +77,7 @@ public class QuizService {
                             .updateQuiz(quiz.getQuestion(), quiz.getOptions(), quiz.getCorrectAnswer());
                 });
     }
-    public void gradeAnswerAndSave(Long iglooId, Long userId, List<SubmitAnswerDTO> submitAnswerDTOs){
+    public void gradeAnswerAndSave(Long iglooId, String userId, List<SubmitAnswerDTO> submitAnswerDTOs){
         AtomicInteger score = new AtomicInteger();
         Igloo findIgloo = iglooService.findById(iglooId);
         quizRepository.findAllByIglooOrderById(findIgloo)

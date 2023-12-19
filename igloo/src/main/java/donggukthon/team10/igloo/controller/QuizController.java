@@ -47,7 +47,7 @@ public class QuizController {
     @PostMapping("/{iglooId}/")
     public ApiResponse submitAnswer(
             @PathVariable Long iglooId,
-            @RequestParam Long userId,
+            @RequestParam String userId,
             @RequestBody List<SubmitAnswerDTO> submitAnswerDTOs){
         quizService.gradeAnswerAndSave(iglooId, userId, submitAnswerDTOs);
         return ApiResponse.nullDataBuilder()
