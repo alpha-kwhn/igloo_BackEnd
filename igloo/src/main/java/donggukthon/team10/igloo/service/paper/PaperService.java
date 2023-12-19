@@ -3,10 +3,7 @@ package donggukthon.team10.igloo.service.paper;
 import donggukthon.team10.igloo.common.ApiResponse;
 import donggukthon.team10.igloo.domain.RollingPaper;
 import donggukthon.team10.igloo.dto.paper.request.WritePaperDTO;
-import donggukthon.team10.igloo.dto.paper.response.CreatedRollingPaperDTO;
-import donggukthon.team10.igloo.dto.paper.response.FindRollingPaperDTO;
-import donggukthon.team10.igloo.dto.paper.response.OpenedPaper;
-import donggukthon.team10.igloo.dto.paper.response.PaperUserInfo;
+import donggukthon.team10.igloo.dto.paper.response.*;
 import donggukthon.team10.igloo.exception.CustomErrorCode;
 import donggukthon.team10.igloo.exception.PaperException;
 import donggukthon.team10.igloo.repository.PaperRepository;
@@ -87,6 +84,7 @@ public class PaperService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public ApiResponse<OpenedPaper> openPaper(Long iglooId, Long paperId, Date date) {
         LocalDate comparisonDate = LocalDate.of(2024, 1, 1);
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -110,6 +108,31 @@ public class PaperService {
                     .data(OpenedPaper.builder()
                             .canRead(false)
                             .contents(null)
+                            .build())
+                    .build();
+        }
+    }
+
+    @Transactional
+    public ApiResponse<DeleteResultDTO> deletePaper(Long iglooId, Long paperId) {
+        RollingPaper rollingPaper = paperRepository.findRollingPaperByIglooIdAndPaperId(iglooId, paperId)
+                .orElse(null);
+
+        if (rollingPaper != null) {
+            paperRepository.delete(rollingPaper);
+            return ApiResponse.<DeleteResultDTO>builder()
+                    .code(HttpStatus.NO_CONTENT.value())
+                    .message(HttpStatus.NO_CONTENT.getReasonPhrase())
+                    .data(DeleteResultDTO.builder()
+                            .paperId(paperId)
+                            .build())
+                    .build();
+        } else {
+            return ApiResponse.<DeleteResultDTO>builder()
+                    .code(HttpStatus.NOT_FOUND.value())
+                    .message(HttpStatus.NOT_FOUND.getReasonPhrase())
+                    .data(DeleteResultDTO.builder()
+                            .paperId(null)
                             .build())
                     .build();
         }
