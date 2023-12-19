@@ -18,6 +18,7 @@ public class User {
     private String password;
     private String korName;
     private String nickname;
+    private String info;
     private String role;
     @Builder
     public User(String username, String korName, String password, String nickname){
@@ -25,6 +26,10 @@ public class User {
         this.password = password;
         this.korName = korName;
         this.nickname = nickname;
+        this.info = nickname + "의 이글루에 오신 걸 환영합니다~!";
         this.role = "USER";
+    }
+    public void updateNickname(String nickname){
+        this.nickname = nickname;
     }
 }

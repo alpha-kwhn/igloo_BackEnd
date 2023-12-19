@@ -42,12 +42,6 @@ public class UserService {
     public boolean isAvailableId(String username){
         return !userRepository.existsByUsername(username);
     }
-    public String login(TestLoginDTO testLoginDTO){
-        UsernamePasswordAuthenticationToken authenticationToken
-                = new UsernamePasswordAuthenticationToken(testLoginDTO.getUserId().toString(), testLoginDTO.getPassword());
-        Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        return jwtProvider.generateToken(authenticate);
-    }
     public User getLoginUser(){
         return userRepository.findUserById(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()))
                 .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
@@ -55,5 +49,10 @@ public class UserService {
     public User findById(Long userId){
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
+    }
+    @Transactional
+    public void updateNickname(String newNickname){
+        User loginUser = getLoginUser();
+        loginUser.updateNickname(newNickname);
     }
 }
