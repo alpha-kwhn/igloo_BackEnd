@@ -31,10 +31,9 @@ public class QuizService {
     private final UserService userService;
     @Transactional
     public void saveQuizzes(Long iglooId, List<SaveQuizDTO> quizzes){
-        iglooService.generateIgloo(); //-> 테스트용 코드
-        //TODO: 이글루 생성 코드도 완성하고 확인 다시 필요
-
         Igloo findIgloo = iglooService.findById(iglooId);
+        if (!findIgloo.getOwner().equals(userService.getLoginUser()))
+            throw new IglooException(CustomErrorCode.MUST_BE_SAME);
         quizzes.stream()
                 .forEach(quiz -> {
                             log.info(quiz.getCorrectAnswer());
@@ -78,6 +77,8 @@ public class QuizService {
                 });
     }
     public void gradeAnswerAndSave(Long iglooId, Long userId, List<SubmitAnswerDTO> submitAnswerDTOs){
+        if (userService.getLoginUser().equals(iglooService.findById(iglooId).getOwner()))
+            throw new IglooException(CustomErrorCode.OWNER_FORBIDDEN);
         AtomicInteger score = new AtomicInteger();
         Igloo findIgloo = iglooService.findById(iglooId);
         quizRepository.findAllByIglooOrderById(findIgloo)

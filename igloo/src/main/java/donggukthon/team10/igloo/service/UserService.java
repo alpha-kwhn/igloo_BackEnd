@@ -31,8 +31,8 @@ public class UserService {
      * 진행하실 때 변경 반드시 해야합니다!
      */
     @Transactional
-    public void saveUser(SaveUserDTO saveUserDTO){
-        userRepository.save(User.builder()
+    public User saveUser(SaveUserDTO saveUserDTO){
+        return userRepository.save(User.builder()
                 .username(saveUserDTO.getId())
                 .password(passwordEncoder.encode(saveUserDTO.getPassword()))
                 .korName(saveUserDTO.getKorName())
@@ -49,14 +49,11 @@ public class UserService {
         return jwtProvider.generateToken(authenticate);
     }
     public User getLoginUser(){
-        return userRepository.findUserByNickname(SecurityContextHolder.getContext().getAuthentication().getName())
+        return userRepository.findUserById(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()))
                 .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
     }
     public User findById(Long userId){
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
-    }
-    private String generateNickname(){
-        return "dlawjddn";
     }
 }
