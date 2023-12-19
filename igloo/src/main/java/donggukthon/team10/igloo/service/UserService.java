@@ -1,17 +1,16 @@
 package donggukthon.team10.igloo.service;
 
+import donggukthon.team10.igloo.domain.Igloo;
 import donggukthon.team10.igloo.domain.User;
-import donggukthon.team10.igloo.dto.TestLoginDTO;
 import donggukthon.team10.igloo.dto.user.request.SaveUserDTO;
+import donggukthon.team10.igloo.dto.user.request.UpdateInfoDTO;
 import donggukthon.team10.igloo.exception.CustomErrorCode;
 import donggukthon.team10.igloo.exception.IglooException;
 import donggukthon.team10.igloo.repository.UserRepository;
 import donggukthon.team10.igloo.service.auth.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final JwtProvider jwtProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
@@ -51,8 +48,11 @@ public class UserService {
                 .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
     }
     @Transactional
-    public void updateNickname(String newNickname){
-        User loginUser = getLoginUser();
-        loginUser.updateNickname(newNickname);
+    public String updateNickname(String newNickname){
+        return getLoginUser().updateNickname(newNickname);
+    }
+    @Transactional
+    public String updateInfo(UpdateInfoDTO updateInfoDTO){
+        return getLoginUser().updateInfo(updateInfoDTO.getInfo());
     }
 }
