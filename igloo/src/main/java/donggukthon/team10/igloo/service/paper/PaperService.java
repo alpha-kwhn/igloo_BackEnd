@@ -84,6 +84,7 @@ public class PaperService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public ApiResponse<OpenedPaper> openPaper(Long iglooId, Long paperId, Date date) {
         LocalDate comparisonDate = LocalDate.of(2024, 1, 1);
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -112,6 +113,7 @@ public class PaperService {
         }
     }
 
+    @Transactional
     public ApiResponse<DeleteResultDTO> deletePaper(Long iglooId, Long paperId) {
         RollingPaper rollingPaper = paperRepository.findRollingPaperByIglooIdAndPaperId(iglooId, paperId)
                 .orElse(null);
@@ -130,7 +132,7 @@ public class PaperService {
                     .code(HttpStatus.NOT_FOUND.value())
                     .message(HttpStatus.NOT_FOUND.getReasonPhrase())
                     .data(DeleteResultDTO.builder()
-                            .paperId(paperId)
+                            .paperId(null)
                             .build())
                     .build();
         }
