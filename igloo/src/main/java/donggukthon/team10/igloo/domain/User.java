@@ -14,13 +14,16 @@ import lombok.NoArgsConstructor;
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String username;
     private String password;
+    private String korName;
     private String nickname;
     private String role;
     @Builder
-    public User(Long id, String password, String nickname){
-        this.id = id;
+    public User(String username, String korName, String password, String nickname){
+        this.username = username;
         this.password = password;
+        this.korName = korName;
         this.nickname = nickname;
         this.role = "USER";
     }
