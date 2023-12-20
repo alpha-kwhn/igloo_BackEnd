@@ -22,13 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-
-    /**
-     * 아래의 3가지 method는 모두 test용 method입니다!!!
-     * 진행하실 때 변경 반드시 해야합니다!
-     */
     @Transactional
     public User saveUser(SaveUserDTO saveUserDTO){
+        if (userRepository.existsByUsername(saveUserDTO.getId()))
+            throw new IglooException(CustomErrorCode.EXISTED_USERNAME);
         return userRepository.save(User.builder()
                 .username(saveUserDTO.getId())
                 .password(passwordEncoder.encode(saveUserDTO.getPassword()))
