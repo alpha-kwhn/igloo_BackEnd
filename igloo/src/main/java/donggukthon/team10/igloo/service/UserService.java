@@ -4,6 +4,8 @@ import donggukthon.team10.igloo.domain.Igloo;
 import donggukthon.team10.igloo.domain.User;
 import donggukthon.team10.igloo.dto.user.request.SaveUserDTO;
 import donggukthon.team10.igloo.dto.user.request.UpdateInfoDTO;
+import donggukthon.team10.igloo.dto.user.request.UpdatePasswordDTO;
+import donggukthon.team10.igloo.dto.user.response.UpdatePasswordResponseDTO;
 import donggukthon.team10.igloo.exception.CustomErrorCode;
 import donggukthon.team10.igloo.exception.IglooException;
 import donggukthon.team10.igloo.repository.UserRepository;
@@ -15,6 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -55,5 +59,21 @@ public class UserService {
     @Transactional
     public String updateInfo(UpdateInfoDTO updateInfoDTO){
         return getLoginUser().updateInfo(updateInfoDTO.getInfo());
+    }
+    @Transactional
+    public UpdatePasswordResponseDTO updatePassword(UpdatePasswordDTO updatePasswordDTO){
+        User findUser = userRepository.findUserByUsernameAndAndKorName(updatePasswordDTO.getId(), updatePasswordDTO.getKorName())
+                .orElseThrow(() -> new IglooException(CustomErrorCode.NOT_FOUND_USER));
+        String rawPassword = changePassword(findUser.getUsername());
+        findUser.updatePassword(passwordEncoder.encode(rawPassword));
+        return UpdatePasswordResponseDTO.builder()
+                .newPassword(rawPassword)
+                .build();
+    }
+    private String changePassword(String username){
+        Random rand = new Random();
+        Integer rNum = (Integer)rand.nextInt(900) + 100;
+        log.info(username+rNum.toString());
+        return username + rNum.toString();
     }
 }

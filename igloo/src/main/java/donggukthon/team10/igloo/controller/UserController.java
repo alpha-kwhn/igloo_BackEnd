@@ -4,6 +4,8 @@ import donggukthon.team10.igloo.common.ApiResponse;
 import donggukthon.team10.igloo.dto.user.request.IglooPageDTO;
 import donggukthon.team10.igloo.dto.user.request.UpdateInfoDTO;
 import donggukthon.team10.igloo.dto.user.request.UpdateNicknameDTO;
+import donggukthon.team10.igloo.dto.user.request.UpdatePasswordDTO;
+import donggukthon.team10.igloo.dto.user.response.UpdatePasswordResponseDTO;
 import donggukthon.team10.igloo.service.IglooService;
 import donggukthon.team10.igloo.service.UserService;
 import donggukthon.team10.igloo.service.VisitService;
@@ -48,6 +50,14 @@ public class UserController {
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(visitService.showVisits(iglooService.findMyIgloo(userService.getLoginUser())))
+                .build();
+    }
+    @PatchMapping("/password")
+    public ApiResponse<UpdatePasswordResponseDTO> changePassword(@RequestBody UpdatePasswordDTO updatePasswordDTO){
+        return ApiResponse.<UpdatePasswordResponseDTO>builder()
+                .code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .data(userService.updatePassword(updatePasswordDTO))
                 .build();
     }
 }
