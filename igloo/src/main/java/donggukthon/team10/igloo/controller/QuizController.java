@@ -38,7 +38,7 @@ public class QuizController {
                 .data(quizService.showAllQuizzes(iglooId))
                 .build();
     }
-    @PatchMapping("/submit/{iglooId}")
+    @PatchMapping("/{iglooId}")
     public ApiResponse<List<ShowAllQuizzesDTO>> editQuizzes(@PathVariable Long iglooId, @RequestBody List<UpdateQuizDTO> updateQuizDTOs){
         quizService.updateQuizzes(iglooId, updateQuizDTOs);
         return ApiResponse.<List<ShowAllQuizzesDTO>>nullDataBuilder()
@@ -46,7 +46,7 @@ public class QuizController {
                 .message(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
-    @PostMapping("/{iglooId}/")
+    @PostMapping("submit/{iglooId}")
     public ApiResponse<?> submitAnswer(
             @PathVariable Long iglooId,
             @RequestBody List<SubmitAnswerDTO> submitAnswerDTOs){
