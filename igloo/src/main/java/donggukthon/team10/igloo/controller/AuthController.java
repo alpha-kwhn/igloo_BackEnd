@@ -26,7 +26,7 @@ public class AuthController {
     private static final String BEARER_PREFIX = "Bearer ";
 
     @PostMapping("/register")
-    public ApiResponse saveUser(@RequestBody SaveUserDTO saveUserDTO){
+    public ApiResponse<?> saveUser(@RequestBody SaveUserDTO saveUserDTO){
         User savedUser = userService.saveUser(saveUserDTO);
         iglooService.generateIgloo(savedUser);
         return ApiResponse.nullDataBuilder()
@@ -35,7 +35,7 @@ public class AuthController {
                 .build();
     }
     @GetMapping("/check")
-    public ApiResponse isAvailable(@RequestParam String id){
+    public ApiResponse<Object> isAvailable(@RequestParam String id){
         return ApiResponse.builder()
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
@@ -43,7 +43,7 @@ public class AuthController {
                 .build();
     }
     @PostMapping("/login")
-    public ApiResponse login(@RequestBody LoginDTO loginDTO, HttpServletResponse response){
+    public ApiResponse<Object> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response){
         LoginResponseDTO loginResponseDTO = loginService.login(loginDTO.getId(), loginDTO.getPassword());
         response.setHeader("Authorization", BEARER_PREFIX + loginResponseDTO.getToken());
         return ApiResponse.builder()
@@ -53,7 +53,7 @@ public class AuthController {
                 .build();
     }
     @GetMapping("/logout")
-    public ApiResponse logout(HttpServletRequest request, HttpServletResponse response){
+    public ApiResponse<?> logout(HttpServletRequest request, HttpServletResponse response){
         loginService.logout(request, response);
         return ApiResponse.nullDataBuilder()
                 .code(HttpStatus.OK.value())
