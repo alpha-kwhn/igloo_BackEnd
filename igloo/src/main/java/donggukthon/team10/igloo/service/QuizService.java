@@ -76,7 +76,7 @@ public class QuizService {
                             .updateQuiz(quiz.getQuestion(), quiz.getOptions(), quiz.getCorrectAnswer());
                 });
     }
-    public void gradeAnswerAndSave(Long iglooId, Long userId, List<SubmitAnswerDTO> submitAnswerDTOs){
+    public void gradeAnswerAndSave(Long iglooId, List<SubmitAnswerDTO> submitAnswerDTOs){
         if (userService.getLoginUser().equals(iglooService.findById(iglooId).getOwner()))
             throw new IglooException(CustomErrorCode.OWNER_FORBIDDEN);
         AtomicInteger score = new AtomicInteger();
@@ -90,6 +90,6 @@ public class QuizService {
                                 if (quizDTO.getAnswer().equals(quiz.getAnswer())) score.addAndGet(10);
                             });
                 });
-        resultService.saveResult(findIgloo, userService.findById(userId), score.get());
+        resultService.saveResult(findIgloo, userService.getLoginUser(), score.get());
     }
 }

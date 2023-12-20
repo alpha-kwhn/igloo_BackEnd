@@ -4,6 +4,8 @@ import donggukthon.team10.igloo.common.ApiResponse;
 import donggukthon.team10.igloo.dto.quiz.request.SaveQuizDTO;
 import donggukthon.team10.igloo.dto.quiz.request.SubmitAnswerDTO;
 import donggukthon.team10.igloo.dto.quiz.request.UpdateQuizDTO;
+import donggukthon.team10.igloo.dto.quiz.response.ShowAllQuizzesDTO;
+import donggukthon.team10.igloo.dto.quiz.response.ShowRankingDTO;
 import donggukthon.team10.igloo.service.QuizService;
 import donggukthon.team10.igloo.service.ResultService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,7 @@ public class QuizController {
     private final QuizService quizService;
     private final ResultService resultService;
     @PostMapping("/{iglooId}")
-    public ApiResponse saveQuizzes(@PathVariable Long iglooId, @RequestBody List<SaveQuizDTO> quizzes){
+    public ApiResponse<?> saveQuizzes(@PathVariable Long iglooId, @RequestBody List<SaveQuizDTO> quizzes){
         quizService.saveQuizzes(iglooId, quizzes);
         return ApiResponse.nullDataBuilder()
                 .code(HttpStatus.CREATED.value())
@@ -29,35 +31,34 @@ public class QuizController {
                 .build();
     }
     @GetMapping("/{iglooId}")
-    public ApiResponse showQuizzes(@PathVariable Long iglooId){
-        return ApiResponse.builder()
+    public ApiResponse<List<ShowAllQuizzesDTO>> showQuizzes(@PathVariable Long iglooId){
+        return ApiResponse.<List<ShowAllQuizzesDTO>>builder()
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(quizService.showAllQuizzes(iglooId))
                 .build();
     }
-    @PatchMapping("/{iglooId}")
-    public ApiResponse editQuizzes(@PathVariable Long iglooId, @RequestBody List<UpdateQuizDTO> updateQuizDTOs){
+    @PatchMapping("/submit/{iglooId}")
+    public ApiResponse<List<ShowAllQuizzesDTO>> editQuizzes(@PathVariable Long iglooId, @RequestBody List<UpdateQuizDTO> updateQuizDTOs){
         quizService.updateQuizzes(iglooId, updateQuizDTOs);
-        return ApiResponse.nullDataBuilder()
+        return ApiResponse.<List<ShowAllQuizzesDTO>>nullDataBuilder()
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
     @PostMapping("/{iglooId}/")
-    public ApiResponse submitAnswer(
+    public ApiResponse<?> submitAnswer(
             @PathVariable Long iglooId,
-            @RequestParam Long userId,
             @RequestBody List<SubmitAnswerDTO> submitAnswerDTOs){
-        quizService.gradeAnswerAndSave(iglooId, userId, submitAnswerDTOs);
+        quizService.gradeAnswerAndSave(iglooId, submitAnswerDTOs);
         return ApiResponse.nullDataBuilder()
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
     @GetMapping("/rank/{iglooId}")
-    public ApiResponse showRanking(@PathVariable Long iglooId){
-        return ApiResponse.builder()
+    public ApiResponse<ShowRankingDTO> showRanking(@PathVariable Long iglooId){
+        return ApiResponse.<ShowRankingDTO>builder()
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .data(resultService.showRanking(iglooId))
